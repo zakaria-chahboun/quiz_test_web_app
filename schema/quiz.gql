@@ -1,0 +1,68 @@
+export const data = `
+scalar JSON
+scalar JSONObject
+
+type Quiz {
+	id: ID!
+	title: String!
+	is_auth: Boolean!
+	tests: [Test!]!
+}
+type Test {
+	id: ID!
+	options: JSONObject!
+	notes: String
+	score: Int!
+}
+
+input QuizInput{
+	id: ID!
+	title: String!
+	is_auth: Boolean!
+	tests: [TestInput!]!
+}
+
+input TestInput{
+	id: ID!
+	options: [OptionInput!]!
+	notes: String!
+	score: Int!
+}
+
+input OptionInput{
+	id: ID!
+	text: String!
+	isTrue: Boolean!
+}
+
+# input of mutation (partial updates) 'fields can be null' :D
+input TestInputUpdate{
+	id: ID!
+	options: [OptionInput!]
+	notes: String
+	score: Int
+}
+
+input QuizInputUpdate{
+	id: ID!
+	title: String
+	is_auth: Boolean
+}
+
+# ------------------
+type Query {
+	quiz(whereID:ID, limit:Int):[Quiz!]!
+	generateID:JSONObject!
+}
+
+type Mutation{
+createQuiz(data: QuizInput!):JSONObject!
+deleteQuiz(id:ID!):JSONObject!
+updateQuiz(data: QuizInputUpdate!):JSONObject!
+
+addTest(quizID:ID!,data: TestInput!):JSONObject!
+deleteTest(quizID:ID!,testID:ID!):JSONObject!
+updateTest(quizID:ID!, data:TestInputUpdate!):JSONObject!
+
+}
+`
