@@ -19,3 +19,7 @@ npm install
 npm run dev
 ```
 
+#### Node & NPM version!
+
+npm: 6.13.6
+nodejs: v13.5.0
