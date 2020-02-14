@@ -72,27 +72,47 @@ service cloud.firestore {
   // only admin can write
     match /quizzes/{quiz_id} {
     
-      function getQuizData() {
-            return get(/databases/$(database)/documents/quizzes/$(quiz_id)).data
-        }
+      /// _____ Functions _____
+			function getQuizData() {
+			return get(/databases/$(database)/documents/quizzes/$(quiz_id)).data
+			}
+      function isAdmin(){
+      return get(/databases/$(database)/documents/editors/$(request.auth.uid)).data.isAdmin == true
+      }
+      function isEditor(){
+      return exists(/databases/$(database)/documents/editors/$(request.auth.uid)) == true
+      }
         
-   match /tests/{test_id}{
-   	allow read: if getQuizData().is_auth == false || request.auth != null;
-    }
+			// You can show quiz with 'is_auth = true' but you can't show his 'tests' baby HH...
+			match /tests/{test_id}{
+				allow read: if getQuizData().is_auth == false || request.auth != null;
+      	// a simple editor can only: create (for now)
+      	allow create: if request.auth != null && isEditor();
+				// if Admin can: create, update, and delete
+				allow write: if request.auth != null && isEditor() && isAdmin();
+    	}
+      
     	allow read;
-      allow write: if false;
+      // a simple editor can only: create (for now)
+      allow create: if request.auth != null && isEditor();
+      // if Admin can: create, update, and delete
+			allow write: if request.auth != null && isEditor() && isAdmin();
     }
     
   // **** users collection ***
   // -------------------------
-  // only authentificated user can read and write
-  // and Only user can read and write to his own space (databaset) 
+  // only authentificated users can read and write
+  // and Only user can read and write to his own space (database) 
   match /users/{user_id}{
   allow read, write: if request.auth.uid == resource.id;
   }
   }
-  
 }
 ```
 
 <img src='https://i.imgur.com/aZJieZT.png'>
+
+
+
+
+zakaria chahboun

@@ -1,0 +1,40 @@
+export const data = `
+
+type Editor{
+    id: ID
+    name: String!
+    email: String!
+    password: String!
+    isAdmin: Boolean!
+}
+
+input InputEditor{
+    name: String!
+    email: String!
+    password: String!
+    isAdmin: Boolean!
+}
+
+input InputEditorUpdate{
+    name: String
+    email: String
+    password: String
+    isAdmin: Boolean
+}
+
+## this is a special type, to return check mutations status .. if it's ok or not :)
+type checkEditorMutation{
+	status: Boolean!
+	message: String!
+}
+
+extend type Query {
+    editors(id: ID):[Editor!]!
+}
+
+extend type Mutation{
+    addEditor(data:InputEditor!):ID!
+    updateEditor(id: ID!, data:InputEditorUpdate!): checkEditorMutation!
+    deleteEditor(id: ID!): checkEditorMutation!
+}
+`

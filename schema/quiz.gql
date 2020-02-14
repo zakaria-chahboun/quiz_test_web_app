@@ -1,5 +1,4 @@
 export const data = `
-scalar JSON
 scalar JSONObject
 
 type Quiz {
@@ -10,9 +9,21 @@ type Quiz {
 }
 type Test {
 	id: ID!
+	question: String!
 	options: JSONObject!
 	notes: String
 	score: Int!
+}
+
+## this is a special type, to return check mutations status .. if it's ok or not :)
+type checkUserMutation{
+	status: Boolean!
+	message: String!
+}
+## this is a special type, to return two types of the same ID :)
+type generateIDtype{
+	realID: String!
+	encryptID: String!
 }
 
 input QuizInput{
@@ -24,6 +35,7 @@ input QuizInput{
 
 input TestInput{
 	id: ID!
+	question: String!
 	options: [OptionInput!]!
 	notes: String!
 	score: Int!
@@ -38,6 +50,7 @@ input OptionInput{
 # input of mutation (partial updates) 'fields can be null' :D
 input TestInputUpdate{
 	id: ID!
+	question: String
 	options: [OptionInput!]
 	notes: String
 	score: Int
@@ -52,17 +65,17 @@ input QuizInputUpdate{
 # ------------------
 type Query {
 	quiz(whereID:ID, limit:Int):[Quiz!]!
-	generateID:JSONObject!
+	generateID:generateIDtype!
 }
 
 type Mutation{
-createQuiz(data: QuizInput!):JSONObject!
-deleteQuiz(id:ID!):JSONObject!
-updateQuiz(data: QuizInputUpdate!):JSONObject!
+createQuiz(data: QuizInput!):checkUserMutation!
+deleteQuiz(id:ID!):checkUserMutation!
+updateQuiz(data: QuizInputUpdate!):checkUserMutation!
 
-addTest(quizID:ID!,data: TestInput!):JSONObject!
-deleteTest(quizID:ID!,testID:ID!):JSONObject!
-updateTest(quizID:ID!, data:TestInputUpdate!):JSONObject!
+addTest(quizID:ID!,data: TestInput!):checkUserMutation!
+deleteTest(quizID:ID!,testID:ID!):checkUserMutation!
+updateTest(quizID:ID!, data:TestInputUpdate!):checkUserMutation!
 
 }
 `

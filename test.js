@@ -1,5 +1,17 @@
 
 
-let x = 'quiz_1'
 
-console.log(parseInt(x) == NaN ? 4 : 6)
+
+
+let user = {
+    name:"salam"
+}
+
+
+if(user.name){
+    console.log("name is here")
+}
+
+if(user.age){
+    console.log("age is here")
+}
