@@ -1,6 +1,6 @@
 import {
   admin
-} from '../privte/firebase_conf.js'
+} from '../private/firebase_conf.js'
 
 //const db = admin.firestore();
 
@@ -64,3 +64,17 @@ export let AssertAuthenticationsErrors = ({
   else if (uid === null && isError === true)
     throw Error("Unauthorized!");
 }
+
+
+export let AssertAuthorizationsErrors = ({
+  uid,
+  isError
+}) => {
+  if (uid === null && isError === false)
+    throw Error("You have to sign in or login!");
+
+  else if (uid === null && isError === true)
+    throw Error("Unauthorized!");
+}
+
+

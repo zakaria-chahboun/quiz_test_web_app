@@ -3,7 +3,7 @@ import {
 } from '../other/_database_settings.js';
 import {
     admin
-} from '../privte/firebase_conf.js'
+} from '../private/firebase_conf.js'
 
 import {
     data
