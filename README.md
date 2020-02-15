@@ -45,12 +45,13 @@ FIREBASE_JSON_COFIGURATION="./privte/myapp-firebase-adminsdk-96f60.json"
 ---------------------------------------------
 
 ### Cloud Firestore Collections:
-add two root ***collections*** to your firestore database:
+add 3 root ***collections*** to your firestore database:
 
 - **`/quizzes`**
 - **`/users`**
+- **`/editors`**
 
-<img src='https://i.imgur.com/PsYmxEq.png'>
+<img src='https://i.imgur.com/lUVVYTQ.png'>
 
 ---------------------------------------------
 
