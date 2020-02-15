@@ -14,11 +14,6 @@ cd quiz_test_web_app
 npm install
 ```
 
-**run code!**
-```sh
-npm run dev
-```
-
 ---------------------------------------------
 
 #### Node & NPM version!
@@ -77,10 +72,17 @@ service cloud.firestore {
 			return get(/databases/$(database)/documents/quizzes/$(quiz_id)).data
 			}
       function isAdmin(){
-      return get(/databases/$(database)/documents/editors/$(request.auth.uid)).data.isAdmin == true
+      // 'isAdmin' is a 'custom claim'
+      return request.auth.token["isAdmin"] == true;
       }
+      // this is for check any editor/admin database existing
       function isEditor(){
-      return exists(/databases/$(database)/documents/editors/$(request.auth.uid)) == true
+      return exists(/databases/$(database)/documents/editors/$(request.auth.uid)) == true;
+      }
+      // to limit or spicified admin email to avoid "Property isAdmin is undefined"
+			// after that we can check isAdmin() function
+      function isEmailFormatAdmin(){
+      return request.auth.token.email.lower().matches(".*admin[.]com")
       }
         
 			// You can show quiz with 'is_auth = true' but you can't show his 'tests' baby HH...
@@ -89,14 +91,14 @@ service cloud.firestore {
       	// a simple editor can only: create (for now)
       	allow create: if request.auth != null && isEditor();
 				// if Admin can: create, update, and delete
-				allow write: if request.auth != null && isEditor() && isAdmin();
+				allow write: if request.auth != null && isEditor() && isEmailFormatAdmin() && isAdmin();
     	}
       
     	allow read;
       // a simple editor can only: create (for now)
       allow create: if request.auth != null && isEditor();
       // if Admin can: create, update, and delete
-			allow write: if request.auth != null && isEditor() && isAdmin();
+			allow write: if request.auth != null && isEditor() && isEmailFormatAdmin() && isAdmin();
     }
     
   // **** users collection ***
@@ -114,5 +116,13 @@ service cloud.firestore {
 
 
 
+#### Finally!
 
-zakaria chahboun
+**run code!**
+```sh
+npm run dev
+```
+
+
+
+zakaria chahboun 2019-2020*
