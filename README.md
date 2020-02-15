@@ -61,6 +61,22 @@ add this rules to your app
 ```firebase
 service cloud.firestore {
   match /databases/{database}/documents {
+
+  // _____ GLOBAL FUNCTIONS _____
+  function isAdmin(){
+  // 'isAdmin' is a 'custom claim'
+  return request.auth.token["isAdmin"] == true;
+  }
+  // this is for check any editor/admin database existing
+  function isEditor(){
+  return exists(/databases/$(database)/documents/editors/$(request.auth.uid)) == true;
+  }
+  // to limit or spicified admin email to avoid "Property isAdmin is undefined"
+  // after that we can check isAdmin() function
+  function isEmailFormatAdmin(){
+  return request.auth.token.email.lower().matches(".*admin[.]com")
+  }
+  
   // *** quizzes collection ****
   // ---------------------------
   // any visitor can read the quiz/tests with no authentification or with 'is_auth' field is false
@@ -72,20 +88,7 @@ service cloud.firestore {
 			function getQuizData() {
 			return get(/databases/$(database)/documents/quizzes/$(quiz_id)).data
 			}
-      function isAdmin(){
-      // 'isAdmin' is a 'custom claim'
-      return request.auth.token["isAdmin"] == true;
-      }
-      // this is for check any editor/admin database existing
-      function isEditor(){
-      return exists(/databases/$(database)/documents/editors/$(request.auth.uid)) == true;
-      }
-      // to limit or spicified admin email to avoid "Property isAdmin is undefined"
-			// after that we can check isAdmin() function
-      function isEmailFormatAdmin(){
-      return request.auth.token.email.lower().matches(".*admin[.]com")
-      }
-        
+         
 			// You can show quiz with 'is_auth = true' but you can't show his 'tests' baby HH...
 			match /tests/{test_id}{
 				allow read: if getQuizData().is_auth == false || request.auth != null;
@@ -105,9 +108,17 @@ service cloud.firestore {
   // **** users collection ***
   // -------------------------
   // only authentificated users can read and write
-  // and Only user can read and write to his own space (database) 
+  // and Only user can read and write his own space (database)
   match /users/{user_id}{
   allow read, write: if request.auth.uid == resource.id;
+  }
+  
+  // **** editors collection ***
+  // -------------------------
+  // only authentificated editors can read and write
+  // and Only "editor" can read and write his own space (database)
+  match /editors/{editor_id}{
+  allow read, write: if request.auth.uid == resource.id || (request.auth != null && isEditor() && isEmailFormatAdmin() && isAdmin());
   }
   }
 }
